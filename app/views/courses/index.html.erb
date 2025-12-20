@@ -32,6 +32,9 @@
                           </span>
                           <span>
                             <%= link_to "View Students", batch_path(batch), class: "btn btn-outline-info btn-sm" %>
+                            <% if can? :update, batch %>
+                              <%= link_to "Edit Batch", edit_batch_path(batch), class: "btn btn-outline-warning btn-sm" %>
+                            <% end %>
                             <% if current_user.student? && !current_user.batches.include?(batch) %>
                               <%= button_to "Request Enrollment", enroll_batch_path(batch), method: :post, class: "btn btn-success btn-sm ml-2" %>
                             <% end %>
@@ -49,5 +52,10 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+<div class="row mt-3">
+  <div class="col-12 d-flex justify-content-center">
+    <%= paginate @courses %>
   </div>
 </div>

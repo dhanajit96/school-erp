@@ -7,15 +7,41 @@ class DashboardController < ApplicationController
     @actions = {}
 
     if current_user.admin?
-      @schools_count = School.count
-      @users_count = User.count
+      # --- SUPER ADMIN STATS ---
+      @stats = {
+        schools: School.count,
+        students: User.where(role: :student).count,
+        courses: Course.count,
+        batches: Batch.count,
+        enrollments: {
+          pending: Enrollment.pending.count,
+          approved: Enrollment.approved.count,
+          denied: Enrollment.denied.count
+        }
+      }
+
     elsif current_user.school_admin?
+      # --- SCHOOL ADMIN STATS ---
       @school = current_user.school
-      @courses = @school.courses
-      @pending_requests = Enrollment.where(batch_id: @school.batches.ids, status: :pending)
+      @stats = {
+        students: User.where(school: @school, role: :student).count,
+        courses: @school.courses.count,
+        batches: Batch.joins(:course).where(courses: { school_id: @school.id }).count,
+        enrollments: {
+          pending: Enrollment.joins(batch: :course).where(courses: { school_id: @school.id }, status: :pending).count,
+          approved: Enrollment.joins(batch: :course).where(courses: { school_id: @school.id }, status: :approved).count,
+          denied: Enrollment.joins(batch: :course).where(courses: { school_id: @school.id }, status: :denied).count
+        }
+      }
+
     elsif current_user.student?
+      # --- STUDENT STATS ---
       @my_enrollments = current_user.enrollments.includes(batch: :course)
-      @available_batches = Batch.where.not(id: current_user.batch_ids)
+      @stats = {
+        applied: @my_enrollments.count,
+        approved: @my_enrollments.approved.count,
+        pending: @my_enrollments.pending.count
+      }
     end
   end
 end

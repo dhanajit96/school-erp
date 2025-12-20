@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col-lg-8 offset-lg-2">
+    <div class="card m-b-30">
+      <div class="card-header">
+        <h5 class="card-title">Edit Batch: <%= @batch.name %></h5>
+      </div>
+      <div class="card-body">
+        <%= form_with(model: @batch, local: true) do |f| %>
+          <% if @batch.errors.any? %>
+            <div class="alert alert-danger">
+              <%= @batch.errors.full_messages.to_sentence %>
+            </div>
+          <% end %>
+          <div class="form-group">
+            <%= f.label :name, "Batch Name" %>
+            <%= f.text_field :name, class: "form-control", placeholder: "e.g. Batch A 2025" %>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <%= f.label :start_date %>
+              <%= f.date_field :start_date, class: "form-control" %>
+            </div>
+            <div class="form-group col-md-6">
+              <%= f.label :end_date %>
+              <%= f.date_field :end_date, class: "form-control" %>
+            </div>
+          </div>
+          <div class="form-group">
+            <%= f.submit "Update Batch", class: "btn btn-primary" %>
+            <%= link_to "Cancel", batch_path(@batch), class: "btn btn-secondary ml-2" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

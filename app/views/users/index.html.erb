@@ -1,0 +1,84 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card m-b-30">
+      <div class="card-header">
+        <div class="row align-items-center">
+          <div class="col-8">
+            <h5 class="card-title">Registered Students</h5>
+          </div>
+          <div class="col-4">
+            <%= form_with(url: users_path, method: :get, local: true, class: "form-inline float-right") do |f| %>
+              <div class="input-group">
+                <%= f.text_field :search, value: params[:search], class: "form-control form-control-sm", placeholder: "Search Name/Email..." %>
+                <div class="input-group-append">
+                  <%= button_tag type: 'submit', class: "btn btn-primary btn-sm" do %>
+                    <i class="feather icon-search"></i>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-hover table-bordered">
+            <thead class="thead-light">
+              <tr>
+                <th>Student Name</th>
+                <th>Email</th>
+                <% if current_user.admin? %>
+                  <th>School</th>
+                <% end %>
+                <th>Joined Date</th>
+                <th class="text-center">Active Batches</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if @students.any? %>
+                <% @students.each do |student| %>
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <img src="/assets/images/users/men.svg" class="img-fluid rounded-circle mr-2" width="30" alt="user">
+                        <%= student.name %>
+                      </div>
+                    </td>
+                    <td><%= student.email %></td>
+                    <% if current_user.admin? %>
+                      <td><%= student.school&.name || "N/A" %></td>
+                    <% end %>
+                    <td><%= student.created_at.strftime("%d %b %Y") %></td>
+                    <td class="text-center">
+                      <span class="badge badge-primary"><%= student.enrollments.approved.count %></span>
+                    </td>
+                    <td>
+                      <%= link_to user_path(student), class: "btn btn-outline-info btn-sm" do %>
+                        <i class="feather icon-eye"></i> View
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              <% else %>
+                <tr>
+                  <td colspan="<%= current_user.admin? ? 6 : 5 %>" class="text-center py-4">
+                    <div class="text-muted">
+                      <i class="feather icon-users f-30"></i><br>
+                      No students found matching your criteria.
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        <div class="row mt-3">
+          <div class="col-12 d-flex justify-content-center">
+            <%= paginate @students %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,54 +1,114 @@
-<div class="row">
-  <% if current_user.admin? %>
+<% if current_user.admin? || current_user.school_admin? %>
+  <div class="row">
     <div class="col-lg-6 col-xl-3">
       <div class="card m-b-30">
         <div class="card-body">
           <div class="row align-items-center">
-            <div class="col-6">
-              <h5 class="card-title font-14">Total Schools</h5>
-              <h4 class="mb-0"><%= @schools_count %></h4>
+            <div class="col-7">
+              <h5 class="card-title font-14"><%= current_user.admin? ? 'Total Schools' : 'My Students' %></h5>
+              <h4 class="mb-0"><%= current_user.admin? ? @stats[:schools] : @stats[:students] %></h4>
             </div>
-            <div class="col-6 text-right">
-              <i class="feather icon-home f-30 text-primary"></i>
+            <div class="col-5 text-right">
+              <img src="/assets/images/svg-icon/<%= current_user.admin? ? 'hospital.svg' : 'customers.svg' %>" class="img-fluid" width="50" alt="icon">
             </div>
           </div>
         </div>
       </div>
     </div>
-  <% end %>
-  <% if current_user.student? %>
-    <div class="col-12">
-      <h4 class="mb-3">My Batches</h4>
-      <div class="table-responsive">
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Course</th>
-              <th>Batch</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @my_enrollments.each do |enrollment| %>
-              <tr>
-                <td><%= enrollment.batch.course.name %></td>
-                <td><%= enrollment.batch.name %></td>
-                <td>
-                  <span class="badge badge-<%= enrollment.status == 'approved' ? 'success' : 'warning' %>">
-                    <%= enrollment.status.humanize %>
-                  </span>
-                </td>
-                <td>
-                  <% if enrollment.approved? %>
-                    <%= link_to "View Classmates", batch_path(enrollment.batch), class: "btn btn-primary btn-sm" %>
-                  <% end %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
+    <div class="col-lg-6 col-xl-3">
+      <div class="card m-b-30">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-7">
+              <h5 class="card-title font-14">Total Courses</h5>
+              <h4 class="mb-0"><%= @stats[:courses] %></h4>
+            </div>
+            <div class="col-5 text-right">
+              <img src="/assets/images/svg-icon/ecommerce.svg" class="img-fluid" width="50" alt="icon">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  <% end %>
-</div>
+    <div class="col-lg-6 col-xl-3">
+      <div class="card m-b-30">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-7">
+              <h5 class="card-title font-14">Total Batches</h5>
+              <h4 class="mb-0"><%= @stats[:batches] %></h4>
+            </div>
+            <div class="col-5 text-right">
+              <img src="/assets/images/svg-icon/calender.svg" class="img-fluid" width="50" alt="icon">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 col-xl-3">
+      <div class="card m-b-30">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-7">
+              <h5 class="card-title font-14">Enrollment Req.</h5>
+              <h4 class="mb-0"><%= @stats[:enrollments][:pending] + @stats[:enrollments][:approved] + @stats[:enrollments][:denied] %></h4>
+            </div>
+            <div class="col-5 text-right">
+              <img src="/assets/images/svg-icon/reports.svg" class="img-fluid" width="50" alt="icon">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="card m-b-30">
+        <div class="card-header">
+          <h5 class="card-title">Enrollment Breakdown</h5>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-md-4">
+              <h4 class="text-warning"><%= @stats[:enrollments][:pending] %></h4>
+              <p>Pending</p>
+            </div>
+            <div class="col-md-4">
+              <h4 class="text-success"><%= @stats[:enrollments][:approved] %></h4>
+              <p>Approved</p>
+            </div>
+            <div class="col-md-4">
+              <h4 class="text-danger"><%= @stats[:enrollments][:denied] %></h4>
+              <p>Denied</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<% elsif current_user.student? %>
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="card m-b-30 bg-primary text-white">
+        <div class="card-body">
+          <h3><%= @stats[:approved] %></h3>
+          <p>Active Classes</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card m-b-30 bg-warning text-white">
+        <div class="card-body">
+          <h3><%= @stats[:pending] %></h3>
+          <p>Pending Requests</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <h4 class="mt-4">My Enrollments</h4>
+      <%= render 'enrollments_table', enrollments: @my_enrollments %>
+    </div>
+  </div>
+<% end %>

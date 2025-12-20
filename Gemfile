@@ -40,6 +40,8 @@ gem "thruster", require: false
 # Authentication & Authorization
 gem "devise"
 gem "cancancan"
+gem "kaminari"
+gem "kaminari-bootstrap"
 
 group :development, :test do
   gem "rspec-rails"
