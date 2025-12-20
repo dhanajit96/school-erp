@@ -1,0 +1,53 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card m-b-30">
+      <div class="card-header">
+        <h5 class="card-title">Courses & Batches</h5>
+      </div>
+      <div class="card-body">
+        <div id="accordion">
+          <% @courses.each_with_index do |course, index| %>
+            <div class="card mb-2 border">
+              <div class="card-header" id="heading<%= index %>">
+                <h5 class="mb-0">
+                  <button class="btn btn-link text-dark font-weight-bold" data-toggle="collapse" data-target="#collapse<%= index %>" aria-expanded="true" aria-controls="collapse<%= index %>">
+                    <%= course.name %>
+                  </button>
+                  <div class="float-right">
+                    <%= link_to "Add Batch", new_course_batch_path(course), class: "btn btn-primary-rgba btn-sm" %>
+                  </div>
+                </h5>
+              </div>
+              <div id="collapse<%= index %>" class="collapse show" aria-labelledby="heading<%= index %>" data-parent="#accordion">
+                <div class="card-body">
+                  <p class="text-muted"><%= course.description %></p>
+                  <h6>Active Batches:</h6>
+                  <% if course.batches.any? %>
+                    <ul class="list-group">
+                      <% course.batches.each do |batch| %>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                          <span>
+                            <strong><%= batch.name %></strong>
+                            <span class="badge badge-secondary ml-2"><%= batch.start_date.strftime("%d %b %Y") %> - <%= batch.end_date.strftime("%d %b %Y") %></span>
+                          </span>
+                          <span>
+                            <%= link_to "View Students", batch_path(batch), class: "btn btn-outline-info btn-sm" %>
+                            <% if current_user.student? && !current_user.batches.include?(batch) %>
+                              <%= button_to "Request Enrollment", enroll_batch_path(batch), method: :post, class: "btn btn-success btn-sm ml-2" %>
+                            <% end %>
+                          </span>
+                        </li>
+                      <% end %>
+                    </ul>
+                  <% else %>
+                    <p class="text-warning">No batches created yet.</p>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

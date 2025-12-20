@@ -1,0 +1,53 @@
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+
+    <div class="form-head">
+      <%= link_to root_path, class: "logo" do %>
+        <img src="/assets/images/logo.svg" class="img-fluid" alt="logo">
+      <% end %>
+    </div>
+
+    <h4 class="text-primary my-4">Reset your password</h4>
+
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <!-- Required hidden field -->
+    <%= f.hidden_field :reset_password_token %>
+
+    <!-- New Password -->
+    <div class="form-group">
+      <%= f.password_field :password,
+        class: "form-control",
+        placeholder: "Enter new password",
+        autofocus: true,
+        autocomplete: "new-password" %>
+
+      <% if @minimum_password_length.present? %>
+        <small class="text-muted">
+          (<%= @minimum_password_length %> characters minimum)
+        </small>
+      <% end %>
+    </div>
+
+    <!-- Confirm Password -->
+    <div class="form-group">
+      <%= f.password_field :password_confirmation,
+        class: "form-control",
+        placeholder: "Confirm new password",
+        autocomplete: "new-password" %>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn btn-success btn-lg btn-block font-18">
+      Change my password
+    </button>
+
+  <% end %>
+
+  <div class="login-or">
+    <h6 class="text-muted">OR</h6>
+  </div>
+
+  <p class="mb-0 mt-3">
+    <%= link_to "Back to Login", new_session_path(resource_name) %>
+  </p>

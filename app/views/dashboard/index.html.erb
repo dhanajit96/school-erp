@@ -1,0 +1,54 @@
+<div class="row">
+  <% if current_user.admin? %>
+    <div class="col-lg-6 col-xl-3">
+      <div class="card m-b-30">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-6">
+              <h5 class="card-title font-14">Total Schools</h5>
+              <h4 class="mb-0"><%= @schools_count %></h4>
+            </div>
+            <div class="col-6 text-right">
+              <i class="feather icon-home f-30 text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <% if current_user.student? %>
+    <div class="col-12">
+      <h4 class="mb-3">My Batches</h4>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Course</th>
+              <th>Batch</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @my_enrollments.each do |enrollment| %>
+              <tr>
+                <td><%= enrollment.batch.course.name %></td>
+                <td><%= enrollment.batch.name %></td>
+                <td>
+                  <span class="badge badge-<%= enrollment.status == 'approved' ? 'success' : 'warning' %>">
+                    <%= enrollment.status.humanize %>
+                  </span>
+                </td>
+                <td>
+                  <% if enrollment.approved? %>
+                    <%= link_to "View Classmates", batch_path(enrollment.batch), class: "btn btn-primary btn-sm" %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+</div>

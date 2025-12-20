@@ -1,0 +1,45 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card m-b-30">
+      <div class="card-header">
+        <h5 class="card-title">Pending Approvals</h5>
+      </div>
+      <div class="card-body">
+        <% if @pending_enrollments.any? %>
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead class="thead-light">
+                <tr>
+                  <th>Student</th>
+                  <th>Requested Course</th>
+                  <th>Batch</th>
+                  <th>Request Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @pending_enrollments.each do |enrollment| %>
+                  <tr>
+                    <td><%= enrollment.user.name %><br>
+                      <small class="text-muted"><%= enrollment.user.email %></small></td>
+                    <td><%= enrollment.batch.course.name %></td>
+                    <td><%= enrollment.batch.name %></td>
+                    <td><%= enrollment.request_date&.strftime("%d %b, %H:%M") || "N/A" %></td>
+                    <td>
+                      <%= link_to "Approve", approve_enrollment_path(enrollment), data: { turbo_method: :patch }, class: "btn btn-success btn-sm" %>
+                      <%= link_to "Deny", deny_enrollment_path(enrollment), data: { turbo_method: :patch }, class: "btn btn-danger btn-sm" %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <div class="alert alert-info text-center">
+            <i class="feather icon-check-circle mr-2"></i> No pending enrollment requests.
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

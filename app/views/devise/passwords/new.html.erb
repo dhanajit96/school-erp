@@ -1,0 +1,36 @@
+
+  <%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+
+    <div class="form-head">
+      <%= link_to root_path, class: "logo" do %>
+        <img src="/assets/images/logo.svg" class="img-fluid" alt="logo">
+      <% end %>
+    </div>
+
+    <h4 class="text-primary my-4">Forgot your password?</h4>
+
+    <!-- Email -->
+    <div class="form-group">
+      <%= f.email_field :email,
+        class: "form-control",
+        placeholder: "Enter your email",
+        autofocus: true,
+        autocomplete: "email"
+      %>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn btn-success btn-lg btn-block font-18">
+      Send reset instructions
+    </button>
+
+  <% end %>
+
+  <div class="login-or">
+    <h6 class="text-muted">OR</h6>
+  </div>
+
+  <p class="mb-0 mt-3">
+    <%= link_to "Back to Login", new_session_path(resource_name) %>
+  </p>
+

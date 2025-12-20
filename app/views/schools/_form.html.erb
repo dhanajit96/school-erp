@@ -1,0 +1,40 @@
+<%= form_with(model: school, local: true) do |f| %>
+  <% if school.errors.any? %>
+    <div class="alert alert-danger">
+      <ul>
+        <% school.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group row">
+    <%= f.label :name, class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-10">
+      <%= f.text_field :name, class: "form-control", placeholder: "e.g. Konnector Academy" %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= f.label :subdomain, class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-10">
+      <%= f.text_field :subdomain, class: "form-control", placeholder: "e.g. konnector" %>
+      <small class="text-muted">Used for the school's unique URL identifier.</small>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <%= f.label :address, class: "col-sm-2 col-form-label" %>
+    <div class="col-sm-10">
+      <%= f.text_area :address, class: "form-control", rows: 3 %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <div class="col-sm-10 offset-sm-2">
+      <%= f.submit class: "btn btn-primary" %>
+      <%= link_to "Cancel", schools_path, class: "btn btn-secondary ml-2" %>
+    </div>
+  </div>
+<% end %>
