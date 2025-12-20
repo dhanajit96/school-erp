@@ -14,7 +14,9 @@
                     <%= course.name %>
                   </button>
                   <div class="float-right">
-                    <%= link_to "Add Batch", new_course_batch_path(course), class: "btn btn-primary-rgba btn-sm" %>
+                    <% if can? :create, Batch %>
+                      <%= link_to "Add Batch", new_course_batch_path(course), class: "btn btn-primary-rgba btn-sm" %>
+                    <% end %>
                   </div>
                 </h5>
               </div>
@@ -28,15 +30,29 @@
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                           <span>
                             <strong><%= batch.name %></strong>
-                            <span class="badge badge-secondary ml-2"><%= batch.start_date.strftime("%d %b %Y") %> - <%= batch.end_date.strftime("%d %b %Y") %></span>
+                            <span class="badge badge-secondary ml-2">
+                              <%= batch.start_date.strftime("%d %b %Y") %> - <%= batch.end_date.strftime("%d %b %Y") %>
+                            </span>
                           </span>
-                          <span>
-                            <%= link_to "View Students", batch_path(batch), class: "btn btn-outline-info btn-sm" %>
-                            <% if can? :update, batch %>
-                              <%= link_to "Edit Batch", edit_batch_path(batch), class: "btn btn-outline-warning btn-sm" %>
+                          <span class="d-flex align-items-center">
+                            <% if current_user.school_admin? || current_user.admin? || (current_user.student? && current_user.enrollments.approved.exists?(batch_id: batch.id)) %>
+                              <%= link_to "View Students", batch_path(batch), class: "btn btn-outline-info btn-sm mr-1" %>
                             <% end %>
-                            <% if current_user.student? && !current_user.batches.include?(batch) %>
-                              <%= button_to "Request Enrollment", enroll_batch_path(batch), method: :post, class: "btn btn-success btn-sm ml-2" %>
+                            <% if can? :update, batch %>
+                              <%= link_to "Edit Batch", edit_batch_path(batch), class: "btn btn-outline-warning btn-sm mr-1" %>
+                            <% end %>
+                            <% if current_user.student? %>
+                              <% existing_enrollment = current_user.enrollments.find_by(batch: batch) %>
+                              <% if existing_enrollment %>
+                                <% status_class = case existing_enrollment.status 
+                                     when 'approved' then 'success'
+                                     when 'denied' then 'danger'
+                                     else 'warning' 
+                                   end %>
+                                <span class="badge badge-<%= status_class %> ml-2"><%= existing_enrollment.status.humanize %></span>
+                              <% elsif can? :enroll, batch %>
+                                <%= button_to "Request Enrollment", enroll_batch_path(batch), method: :post, class: "btn btn-success btn-sm ml-2" %>
+                              <% end %>
                             <% end %>
                           </span>
                         </li>
@@ -50,7 +66,7 @@
             </div>
           <% end %>
         </div>
-      </div>
+ </div>
     </div>
   </div>
 </div>

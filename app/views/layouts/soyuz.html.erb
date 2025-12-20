@@ -40,7 +40,7 @@
                     <img src="/assets/images/svg-icon/hospital.svg" class="img-fluid" alt="Schools" data-toggle="tooltip" data-placement="top">
                   </a>
                 <% end %>
-                <% if can? :manage, Course %>
+                <% if can? :read, Course %>
                   <a class="nav-link <%= "active" if controller_name == "courses" || controller_name == "batches" %>" href="<%= courses_path %>" title="Courses & Batches">
                     <img src="/assets/images/svg-icon/ecommerce.svg" class="img-fluid" alt="Courses" data-toggle="tooltip" data-placement="top">
                   </a>
@@ -51,13 +51,15 @@
                   </a>
                 <% end %>
                 <% if current_user.student? %>
-                  <a class="nav-link" href="#" title="My Profile">
-                    <img src="/assets/images/svg-icon/pages.svg" class="img-fluid" alt="Profile" data-toggle="tooltip" data-placement="top">
+                  <a class="nav-link" href="<%= user_path(current_user)%>" title="My Profile">
+                    <img src="/assets/images/svg-icon/crm.svg" class="img-fluid" alt="Profile" data-toggle="tooltip" data-placement="top">
                   </a>
                 <% end %>
-                <a class="nav-link <%= "active" if request.path == users_path %>" href="<%= users_path %>" title="Dashboard">
-                  <img src="/assets/images/svg-icon/crm.svg" class="img-fluid" alt="Dashboard" data-toggle="tooltip" data-placement="top">
-                </a>
+                <% if can? :index, User %>
+                  <a class="nav-link <%= "active" if request.path == users_path %>" href="<%= users_path %>" title="Users">
+                    <img src="/assets/images/svg-icon/customers.svg" class="img-fluid" alt="users" data-toggle="tooltip" data-placement="top">
+                  </a>
+                <% end %>
               </div>
             </div>
           </div>

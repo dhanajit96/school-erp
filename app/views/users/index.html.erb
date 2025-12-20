@@ -57,6 +57,11 @@
                       <%= link_to user_path(student), class: "btn btn-outline-info btn-sm" do %>
                         <i class="feather icon-eye"></i> View
                       <% end %>
+                      <% if can? :update, student %>
+                        <%= link_to edit_user_path(student), class: "btn btn-outline-warning btn-sm" do %>
+                          <i class="feather icon-edit"></i> Edit
+                        <% end %>
+                      <% end %>
                     </td>
                   </tr>
                 <% end %>

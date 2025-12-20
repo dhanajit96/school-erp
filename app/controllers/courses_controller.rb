@@ -5,8 +5,15 @@ class CoursesController < ApplicationController
   def index
     @page_title = "Courses"
     @breadcrumb_list = [ [ "Home", root_path ], [ "Courses", nil ] ]
-    @actions = [ [ "Add Course", new_course_path ] ]
 
+    # DYNAMIC ACTION BUTTON: Only show "Add Course" if user is allowed
+    @actions = []
+    if can? :create, Course
+      @actions << [ "Add Course", new_course_path ]
+    end
+
+    # CanCanCan automatically filters @courses based on ability.rb
+    # (e.g., Students/SchoolAdmins only see courses for their school_id)
     @courses = @courses.page(params[:page]).per(5)
   end
 

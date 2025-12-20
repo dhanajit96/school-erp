@@ -26,22 +26,43 @@ class BatchesController < ApplicationController
   end
 
   def show
-    @page_title = "Batch Details: #{@batch.name}"
-    @breadcrumb_list = [
-      [ "Home", root_path ],
-      [ "My Batches", courses_path ],
-      [ @batch.name, nil ]
-    ]
+    @batch = Batch.find(params[:id])
+
+    # Security:
+    # 1. School Admin can see.
+    # 2. Students can ONLY see if they are approved members of this batch.
+    unless can?(:read, @batch) || (current_user.student? && current_user.enrollments.approved.exists?(batch_id: @batch.id))
+      redirect_to root_path, alert: "Access Denied. You must be an approved member of this batch."
+      return
+    end
+
+    @page_title = "Batch: #{@batch.name}"
+    @breadcrumb_list = [ [ "Home", root_path ], [ "Courses", courses_path ], [ "Classmates", nil ] ]
     @actions = []
-    @students = @batch.students
+
+    # School Admins can add students from here
+    if can? :create, Enrollment
+      @actions << [ "+ Add Student", new_batch_enrollment_path(@batch) ]
+    end
+
+    # Fetch approved students for this batch
+    @students = @batch.students.joins(:enrollments).where(enrollments: { status: :approved })
   end
 
+  # Student Action: Request to join
   def enroll
+    # Check if already enrolled
+    if current_user.enrollments.exists?(batch_id: @batch.id)
+      redirect_to courses_path, alert: "You have already requested to join this batch."
+      return
+    end
+
     enrollment = current_user.enrollments.build(batch: @batch, status: :pending)
+
     if enrollment.save
-      redirect_to root_path, notice: "Request sent."
+      redirect_to root_path, notice: "Enrollment request sent successfully. Waiting for approval."
     else
-      redirect_to root_path, alert: "Could not enroll."
+      redirect_to courses_path, alert: "Unable to send request."
     end
   end
 

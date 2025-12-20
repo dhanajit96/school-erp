@@ -1,0 +1,62 @@
+<div class="table-responsive">
+  <table class="table table-bordered table-hover">
+    <thead class="thead-light">
+      <tr>
+        <th>Course Name</th>
+        <th>Batch</th>
+        <th>Duration</th>
+        <th>Request Date</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if enrollments.any? %>
+        <% enrollments.each do |enrollment| %>
+          <tr>
+            <td class="font-weight-bold"><%= enrollment.batch.course.name %></td>
+            <td><%= enrollment.batch.name %></td>
+            <td>
+              <small class="text-muted">
+                <%= enrollment.batch.start_date.strftime("%d %b") %> - <%= enrollment.batch.end_date.strftime("%d %b %Y") %>
+              </small>
+            </td>
+            <td><%= enrollment.created_at.strftime("%d %b %Y") %></td>
+            <td>
+              <% 
+                badge_class = case enrollment.status
+                  when 'approved' then 'success'
+                  when 'pending' then 'warning'
+                  when 'denied' then 'danger'
+                  else 'secondary'
+                end 
+              %>
+              <span class="badge badge-<%= badge_class %>">
+                <%= enrollment.status.humanize %>
+              </span>
+            </td>
+            <td>
+              <% if enrollment.approved? %>
+                <%= link_to batch_path(enrollment.batch), class: "btn btn-primary-rgba btn-sm" do %>
+                  <i class="feather icon-users mr-1"></i> Classmates
+                <% end %>
+              <% else %>
+                <span class="text-muted font-12">Wait for approval</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      <% else %>
+        <tr>
+          <td colspan="6" class="text-center py-4">
+            <div class="text-muted">
+              <i class="feather icon-folder-minus f-30"></i><br>
+              You haven't enrolled in any courses yet.
+            </div>
+            <%= link_to "Browse Courses", courses_path, class: "btn btn-primary btn-sm mt-2" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,36 @@
+<div class="row">
+  <div class="col-lg-6 offset-lg-3">
+    <div class="card m-b-30">
+      <div class="card-header">
+        <h5 class="card-title">Add Student to <%= @batch.name %></h5>
+      </div>
+      <div class="card-body">
+        
+        <% if @available_students.any? %>
+          <%= form_with(model: [@batch, @enrollment], local: true) do |f| %>
+            
+            <div class="form-group">
+              <label>Select Student</label>
+              <%= f.collection_select :user_id, @available_students, :id, :name, { prompt: "Choose a student..." }, { class: "form-control select2" } %>
+              <small class="text-muted">Only showing students from your school who are not yet in this batch.</small>
+            </div>
+
+            <div class="form-group text-center mt-4">
+              <%= f.submit "Add Student", class: "btn btn-primary" %>
+              <%= link_to "Cancel", batch_path(@batch), class: "btn btn-secondary ml-2" %>
+            </div>
+            
+          <% end %>
+        <% else %>
+          <div class="alert alert-warning text-center">
+            All students in your school are already enrolled in this batch, or no students exist.
+          </div>
+          <div class="text-center">
+            <%= link_to "Back", batch_path(@batch), class: "btn btn-secondary" %>
+          </div>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+</div>

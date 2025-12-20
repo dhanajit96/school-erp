@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     resources :batches, shallow: true do
       # Custom route for students to request enrollment
       post "enroll", on: :member
+      resources :enrollments, only: [ :new, :create ]
     end
   end
 
@@ -32,5 +33,5 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :users
+  resources :users, path: "students"
 end
