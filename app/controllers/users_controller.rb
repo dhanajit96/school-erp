@@ -1,54 +1,71 @@
 class UsersController < ApplicationController
   before_action :authenticate_user!
 
-  # We manually authorize for safety, or use load_and_authorize_resource logic carefully
-
   def index
+    # 1. Authorization Guard
     authorize! :index, User
-    @page_title = "Student Directory"
-    @breadcrumb_list = [ [ "Home", root_path ], [ "Students", nil ] ]
 
-    # Action Button for School Admin/Admin
+    # 2. Dynamic Title & Breadcrumbs
+    if current_user.admin?
+      @page_title = "User Directory"
+      btn_label = "Add New User"
+      # Admin sees Students and School Admins
+      @students = User.where(role: [ :student, :school_admin ])
+    else
+      @page_title = "Student Directory"
+      btn_label = "Add New Student"
+      # School Admin sees ONLY students from their school
+      @students = User.where(role: :student, school_id: current_user.school_id)
+    end
+
+    @breadcrumb_list = [ [ "Home", root_path ], [ "Users", nil ] ]
+
+    # 3. Dynamic Action Button
     if can? :create, User
-      @actions = [ [ "Add New Student", new_user_path ] ]
+      @actions = [ [ btn_label, new_user_path ] ]
     else
       @actions = []
     end
 
-    @students = User.where(role: :student)
-    @students = @students.where(school_id: current_user.school_id) if current_user.school_admin?
-
+    # 4. Search Logic
     if params[:search].present?
       term = "%#{params[:search]}%"
       @students = @students.where("name ILIKE ? OR email ILIKE ?", term, term)
     end
 
+    # 5. Pagination
     @students = @students.order(created_at: :desc).page(params[:page]).per(10)
   end
 
   def show
     @student = User.find(params[:id])
+
+    # Using 'authorize!' ensures School Admins can't view users from other schools
+    # (as defined in Ability.rb)
     authorize! :read, @student
 
-    @page_title = "Student Profile"
-    @breadcrumb_list = [ [ "Home", root_path ], [ "Students", users_path ], [ @student.name, nil ] ]
-    @actions = []
+    @page_title = @student.name
+    @breadcrumb_list = [ [ "Home", root_path ], [ "Users", users_path ], [ @student.name, nil ] ]
 
-    # Allow edit from show page
+    @actions = []
     if can? :update, @student
       @actions << [ "Edit Profile", edit_user_path(@student) ]
     end
 
-    @enrollments = @student.enrollments.includes(batch: :course).order(created_at: :desc)
+    # Only show enrollments if the user is a student
+    if @student.student?
+      @enrollments = @student.enrollments.includes(batch: :course).order(created_at: :desc)
+    end
   end
-
-  # --- NEW METHODS ---
 
   def new
     authorize! :create, User
     @user = User.new
-    @page_title = "Register New Student"
-    @breadcrumb_list = [ [ "Home", root_path ], [ "Students", users_path ], [ "New", nil ] ]
+
+    # Dynamic Page Title
+    title = current_user.admin? ? "Register New User" : "Register New Student"
+    @page_title = title
+    @breadcrumb_list = [ [ "Home", root_path ], [ "Users", users_path ], [ "New", nil ] ]
     @actions = []
   end
 
@@ -56,18 +73,21 @@ class UsersController < ApplicationController
     authorize! :create, User
     @user = User.new(user_params)
 
-    # Force role to student
-    @user.role = :student
-
-    # Assign School: If School Admin, force their school. If Super Admin, use form selection or nil.
+    # --- ROLE & SCHOOL ASSIGNMENT LOGIC ---
     if current_user.school_admin?
+      # STRICT: School Admins can only create Students for their own school
+      @user.role = :student
       @user.school_id = current_user.school_id
+    elsif current_user.admin?
+      # FLEXIBLE: Admin can set role via form, but we ensure a default if missing
+      @user.role ||= :student
+      # Admin can optionally set school_id via form (required for SchoolAdmin role)
     end
 
     if @user.save
-      redirect_to users_path, notice: "Student created successfully."
+      redirect_to users_path, notice: "#{@user.role.humanize} created successfully."
     else
-      @page_title = "Register New Student"
+      @page_title = current_user.admin? ? "Register New User" : "Register New Student"
       render :new
     end
   end
@@ -76,8 +96,8 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     authorize! :update, @user
 
-    @page_title = "Edit Student: #{@user.name}"
-    @breadcrumb_list = [ [ "Home", root_path ], [ "Students", users_path ], [ "Edit", nil ] ]
+    @page_title = "Edit User: #{@user.name}"
+    @breadcrumb_list = [ [ "Home", root_path ], [ "Users", users_path ], [ "Edit", nil ] ]
     @actions = []
   end
 
@@ -85,16 +105,16 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     authorize! :update, @user
 
-    # Handle password update: if blank, remove it so Devise doesn't complain
+    # Handle password update: if blank, remove keys so Devise doesn't invalidate the record
     if params[:user][:password].blank?
       params[:user].delete(:password)
       params[:user].delete(:password_confirmation)
     end
 
     if @user.update(user_params)
-      redirect_to user_path(@user), notice: "Student details updated."
+      redirect_to user_path(@user), notice: "User details updated successfully."
     else
-      @page_title = "Edit Student"
+      @page_title = "Edit User"
       render :edit
     end
   end
@@ -102,9 +122,14 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    # Only allow Admin to set school_id explicitly
+    # Base permitted params
     permitted = [ :name, :email, :password, :password_confirmation ]
-    permitted << :school_id if current_user.admin?
+
+    # Admin allows Role and School assignment
+    if current_user.admin?
+      permitted += [ :role, :school_id ]
+    end
+
     params.require(:user).permit(permitted)
   end
 end

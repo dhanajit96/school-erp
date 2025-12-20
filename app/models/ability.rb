@@ -27,6 +27,7 @@ class Ability
       # Full control over Courses and Batches within their school
       can :manage, Course, school_id: user.school_id
       can :manage, Batch, course: { school_id: user.school_id }
+      can :create, Batch, course: { school_id: user.school_id }
 
       # --- Enrollment Management ---
       # Can approve/deny/view requests for their school's batches
@@ -39,6 +40,7 @@ class Ability
       # Can manage (Edit/Delete) ONLY users who are 'students' AND belong to this school.
       # strict_loading prevents them from editing other SchoolAdmins or Super Admins.
       can :manage, User, role: "student", school_id: user.school_id
+      can :read, User, id: user.id
 
     # ==========================================================
     # 3. STUDENT (Consumer)
@@ -72,7 +74,7 @@ class Ability
 
       # --- Self Management ---
       # Can read and update their own profile (e.g. change password/name)
-      can [ :read, :update ], User, id: user.id
+      can [ :read ], User, id: user.id
 
       # STRICTLY FORBIDDEN: Seeing the list of all users
       cannot :index, User

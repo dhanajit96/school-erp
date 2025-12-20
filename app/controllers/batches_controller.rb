@@ -28,11 +28,8 @@ class BatchesController < ApplicationController
   def show
     @batch = Batch.find(params[:id])
 
-    # Security:
-    # 1. School Admin can see.
-    # 2. Students can ONLY see if they are approved members of this batch.
     unless can?(:read, @batch) || (current_user.student? && current_user.enrollments.approved.exists?(batch_id: @batch.id))
-      redirect_to root_path, alert: "Access Denied. You must be an approved member of this batch."
+      redirect_to root_path, alert: "Access Denied."
       return
     end
 
@@ -40,12 +37,11 @@ class BatchesController < ApplicationController
     @breadcrumb_list = [ [ "Home", root_path ], [ "Courses", courses_path ], [ "Classmates", nil ] ]
     @actions = []
 
-    # School Admins can add students from here
+    # --- NEW: Add Action Button for School Admins ---
     if can? :create, Enrollment
-      @actions << [ "+ Add Student", new_batch_enrollment_path(@batch) ]
+      # Links to the new search form we are about to build
+      @actions << [ "Add Student", new_batch_enrollment_path(@batch) ]
     end
-
-    # Fetch approved students for this batch
     @students = @batch.students.joins(:enrollments).where(enrollments: { status: :approved })
   end
 

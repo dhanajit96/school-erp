@@ -26,8 +26,10 @@
                     <td><%= enrollment.batch.name %></td>
                     <td><%= enrollment.request_date&.strftime("%d %b, %H:%M") || "N/A" %></td>
                     <td>
-                      <%= link_to "Approve", approve_enrollment_path(enrollment), data: { turbo_method: :patch }, class: "btn btn-success btn-sm" %>
-                      <%= link_to "Deny", deny_enrollment_path(enrollment), data: { turbo_method: :patch }, class: "btn btn-danger btn-sm" %>
+                      <div class="btn-group" role="group">
+                        <%= button_to "Approve", approve_enrollment_path(enrollment), method: :patch, class: "btn btn-success btn-sm", form: { style: 'display:inline-block;' } %>
+                        <%= button_to "Deny", deny_enrollment_path(enrollment), method: :patch, class: "btn btn-danger btn-sm ml-1", form: { style: 'display:inline-block;' } %>
+                      </div>
                     </td>
                   </tr>
                 <% end %>

@@ -1,35 +1,73 @@
 <div class="row">
-  <div class="col-lg-6 offset-lg-3">
+  <div class="col-lg-12">
     <div class="card m-b-30">
       <div class="card-header">
-        <h5 class="card-title">Add Student to <%= @batch.name %></h5>
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h5 class="card-title">Select Students to Add</h5>
+          </div>
+          <div class="col-md-4">
+            <%= form_with(url: new_batch_enrollment_path(@batch), method: :get, local: true, class: "form-inline justify-content-end") do |f| %>
+              <div class="input-group">
+                <%= f.text_field :search, value: params[:search], class: "form-control form-control-sm", placeholder: "Search Name/Email..." %>
+                <div class="input-group-append">
+                  <%= button_tag type: 'submit', class: "btn btn-primary btn-sm" do %>
+                    <i class="feather icon-search"></i>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
       </div>
       <div class="card-body">
-        
         <% if @available_students.any? %>
-          <%= form_with(model: [@batch, @enrollment], local: true) do |f| %>
-            
-            <div class="form-group">
-              <label>Select Student</label>
-              <%= f.collection_select :user_id, @available_students, :id, :name, { prompt: "Choose a student..." }, { class: "form-control select2" } %>
-              <small class="text-muted">Only showing students from your school who are not yet in this batch.</small>
-            </div>
-
-            <div class="form-group text-center mt-4">
-              <%= f.submit "Add Student", class: "btn btn-primary" %>
-              <%= link_to "Cancel", batch_path(@batch), class: "btn btn-secondary ml-2" %>
-            </div>
-            
-          <% end %>
-        <% else %>
-          <div class="alert alert-warning text-center">
-            All students in your school are already enrolled in this batch, or no students exist.
+          <div class="table-responsive">
+            <table class="table table-hover table-bordered">
+              <thead class="thead-light">
+                <tr>
+                  <th>Student Name</th>
+                  <th>Email</th>
+                  <th class="text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @available_students.each do |student| %>
+                  <tr>
+                    <td>
+                      <img src="/assets/images/users/men.svg" class="img-fluid rounded-circle mr-2" width="30" alt="user">
+                      <%= student.name %>
+                    </td>
+                    <td><%= student.email %></td>
+                    <td class="text-right">
+                      <%= form_with(url: batch_enrollments_path(@batch), method: :post, local: true) do |f| %>
+                        <%= hidden_field_tag :user_id, student.id %>
+                        <%= button_tag class: "btn btn-success btn-sm" do %>
+                          <i class="feather icon-plus"></i> Add
+                        <% end %>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
           </div>
-          <div class="text-center">
-            <%= link_to "Back", batch_path(@batch), class: "btn btn-secondary" %>
+          <div class="row mt-3">
+            <div class="col-12 d-flex justify-content-center">
+              <%= paginate @available_students %>
+            </div>
+          </div>
+        <% else %>
+          <div class="text-center py-5">
+            <i class="feather icon-users f-40 text-muted"></i>
+            <h5 class="mt-3">No students found</h5>
+            <p class="text-muted">Either no students match your search, or all students are already in this batch.</p>
+            <%= link_to "Clear Search", new_batch_enrollment_path(@batch), class: "btn btn-secondary btn-sm" %>
           </div>
         <% end %>
-
+      </div>
+      <div class="card-footer text-right">
+        <%= link_to "Done / Back to Batch", batch_path(@batch), class: "btn btn-primary" %>
       </div>
     </div>
   </div>

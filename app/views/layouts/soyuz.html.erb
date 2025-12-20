@@ -42,12 +42,12 @@
                 <% end %>
                 <% if can? :read, Course %>
                   <a class="nav-link <%= "active" if controller_name == "courses" || controller_name == "batches" %>" href="<%= courses_path %>" title="Courses & Batches">
-                    <img src="/assets/images/svg-icon/ecommerce.svg" class="img-fluid" alt="Courses" data-toggle="tooltip" data-placement="top">
+                    <img src="/assets/images/svg-icon/basic.svg" class="img-fluid" alt="Courses" data-toggle="tooltip" data-placement="top">
                   </a>
                 <% end %>
                 <% if current_user.school_admin? %>
                   <a class="nav-link <%= "active" if controller_name == "enrollments" %>" href="<%= enrollments_path %>" title="Enrollment Requests">
-                    <img src="/assets/images/svg-icon/ui-kits.svg" class="img-fluid" alt="Enrollments" data-toggle="tooltip" data-placement="top">
+                    <img src="/assets/images/svg-icon/notifications.svg" class="img-fluid" alt="Enrollments" data-toggle="tooltip" data-placement="top">
                   </a>
                 <% end %>
                 <% if current_user.student? %>
@@ -113,7 +113,11 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="profilelink">
                           <div class="dropdown-item">
                             <div class="profilename">
-                              <h5><%= current_user.name%></h5>
+                              <% if current_user.school_admin? %>
+                                <a href="<%= user_path(current_user)%>"><%= current_user.name%></a>
+                              <% else %>
+                                <h5><%= current_user.name%></h5>
+                              <% end %>
                             </div>
                           </div>
                           <div class="userbox">
