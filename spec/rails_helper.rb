@@ -69,4 +69,21 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+  #
+
+  # 1. Include FactoryBot methods (create, build)
+  config.include FactoryBot::Syntax::Methods
+
+  # 2. Include Devise helpers for Controller specs
+  config.include Devise::Test::ControllerHelpers, type: :controller
+
+  # 3. Include Devise helpers for Request specs (THIS IS THE FIX)
+  config.include Devise::Test::IntegrationHelpers, type: :request
+  config.include Devise::Test::IntegrationHelpers, type: :system
+
+  # Remove this line if you're not using ActiveRecord
+  config.fixture_paths = [ Rails.root.join('spec/fixtures') ]
+  config.use_transactional_fixtures = true
+  config.infer_spec_type_from_file_location!
+  config.filter_rails_from_backtrace!
 end

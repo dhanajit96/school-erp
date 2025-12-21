@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :school do
-    name { "MyString" }
-    address { "MyText" }
-    subdomain { "MyString" }
+    name { Faker::Educator.university }
+    address { Faker::Address.full_address }
+    subdomain { Faker::Internet.domain_word }
   end
 end
