@@ -43,6 +43,15 @@ gem "cancancan"
 gem "kaminari"
 gem "kaminari-bootstrap"
 
+# API Authentication
+gem "devise-jwt"
+
+# JSON Serialization
+gem "blueprinter"
+
+# CORS (Cross-Origin Resource Sharing)
+gem "rack-cors"
+
 group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"

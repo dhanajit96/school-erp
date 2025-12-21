@@ -35,4 +35,29 @@ Rails.application.routes.draw do
       patch :deny
     end
   end
+
+
+
+  namespace :api, defaults: { format: :json } do
+    namespace :v1 do
+      # Custom Devise Login for API
+      devise_scope :user do
+        post "login", to: "sessions#create"
+        delete "logout", to: "sessions#destroy"
+      end
+
+      resources :schools, only: [ :index, :show, :create ]
+      resources :courses, only: [ :index, :show, :create ]
+      resources :batches, only: [ :show ] do
+        post "enroll", to: "enrollments#create" # Student action
+      end
+
+      resources :enrollments, only: [ :index ] do
+        member do
+          patch :approve
+          patch :deny
+        end
+      end
+    end
+  end
 end
