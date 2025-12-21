@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="72" viewBox="0 0 620 72">
+  <defs>
+    <style>
+      .fill-primary { fill: #506ee4; }
+    </style>
+  </defs>
+
+  <rect x="0" y="0" width="620" height="72" fill="none"/>
+
+  <text
+    x="0"
+    y="68"
+    class="fill-primary"
+    font-family="Montserrat, Arial, Helvetica, sans-serif"
+    font-size="92"
+    font-weight="900"
+    letter-spacing="2.5">
+    STA ODISHA
+  </text>
+
+</svg>

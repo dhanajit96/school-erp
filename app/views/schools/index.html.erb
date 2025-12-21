@@ -22,6 +22,7 @@
                   <td><%= school.address %></td>
                   <td><%= school.subdomain %></td>
                   <td>
+                    <%= link_to "show", school_path(school), class: "btn btn-outline-info btn-sm" %>
                     <%= link_to "Edit", edit_school_path(school), class: "btn btn-outline-warning btn-sm" %>
                   </td>
                 </tr>

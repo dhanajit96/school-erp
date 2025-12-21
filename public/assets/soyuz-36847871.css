@@ -1,0 +1,58 @@
+.rightbar {
+    margin-left: 60px;
+}
+
+.leftbar {
+    width: 60px;
+}
+
+.topbar {
+    left: 60px;
+}
+
+.logobar .logo img {
+    width: 228px;
+}
+
+
+
+/* 1. Add spacing between page numbers */
+.pagination span {
+    margin: 0 4px;
+    /* Creates space between the buttons */
+}
+
+/* 2. Optional: Style them to look like Bootstrap buttons */
+.pagination span a,
+.pagination span.current {
+    display: inline-block;
+    padding: 6px 12px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    /* Rounded corners */
+    text-decoration: none;
+    color: #007bff;
+    /* Bootstrap Blue */
+    background-color: #fff;
+}
+
+/* 3. Highlight the current page */
+.pagination span.current {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+    cursor: default;
+}
+
+/* 4. Hover effect */
+.pagination span a:hover {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+/* 5. Handle the "..." gap */
+.pagination span.gap {
+    border: none;
+    padding: 6px;
+    color: #6c757d;
+}

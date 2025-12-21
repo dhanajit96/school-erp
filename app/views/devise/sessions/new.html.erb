@@ -1,64 +1,51 @@
-
-  <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-
-    <div class="logobar">
-      <a href="#" class="logo logo-large">
-        <img src="/assets/images/sta_odisha.svg" class="img-fluid" alt="logo" style="width: 100px; height: 100px">
-      </a>
-    </div>
-
-    <div class="form-head">
-      <%= link_to root_path, class: "logo" do %>
-        <img src="/assets/images/logo.svg" class="img-fluid" alt="logo">
-      <% end %>
-    </div>
-
-    <%# <h4 class="text-primary my-4">Log in!</h4> %>
-
-    <!-- Email -->
-    <div class="form-group">
-      <%= f.email_field :email,
+<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+  <div class="logobar">
+    <a href="#" class="logo logo-large">
+      <img src="/assets/images/sta_odisha.svg" class="img-fluid" alt="logo" style="width: 100px; height: 100px">
+    </a>
+  </div>
+  <div class="form-head">
+    <%= link_to root_path, class: "logo" do %>
+      <img src="/assets/images/logo.svg" class="img-fluid" alt="logo">
+    <% end %>
+  </div>
+  <%# <h4 class="text-primary my-4">Log in!</h4> %>
+  <!-- Email -->
+  <div class="form-group">
+    <%= f.email_field :email,
         class: "form-control",
         placeholder: "Enter Email",
         autofocus: true,
         autocomplete: "email" %>
-    </div>
-
-    <!-- Password -->
-    <div class="form-group">
-      <%= f.password_field :password,
+  </div>
+  <!-- Password -->
+  <div class="form-group">
+    <%= f.password_field :password,
         class: "form-control",
         placeholder: "Enter Password",
         autocomplete: "current-password" %>
-    </div>
-
-    <!-- Remember + Forgot -->
-    <div class="form-row mb-3">
-      <div class="col-sm-6">
-        <div class="custom-control custom-checkbox text-left">
-
-          <%= f.check_box :remember_me,
+  </div>
+  <!-- Remember + Forgot -->
+  <div class="form-row mb-3">
+    <div class="col-sm-6">
+      <div class="custom-control custom-checkbox text-left">
+        <%= f.check_box :remember_me,
               class: "custom-control-input",
               id: "rememberme" %>
-
-          <label class="custom-control-label font-14" for="rememberme">
-            Remember Me
-          </label>
-
-        </div>
-      </div>
-
-      <div class="col-sm-6">
-        <div class="forgot-psw">
-          <%= link_to "Forgot Password?", new_password_path(resource_name),
-              class: "font-14" %>
-        </div>
+        <label class="custom-control-label font-14" for="rememberme">
+          Remember Me
+        </label>
       </div>
     </div>
-
-    <!-- Submit -->
-    <button type="submit" class="btn btn-success btn-lg btn-block font-18">
-      Log in
-    </button>
-
-  <% end %>
+    <div class="col-sm-6">
+      <div class="forgot-psw">
+        <%= link_to "Forgot Password?", new_password_path(resource_name),
+              class: "font-14" %>
+      </div>
+    </div>
+  </div>
+  <!-- Submit -->
+  <button type="submit" class="btn btn-success btn-lg btn-block font-18">
+    Log in
+  </button>
+<% end %>

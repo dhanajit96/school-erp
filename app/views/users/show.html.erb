@@ -29,7 +29,7 @@
               </tr>
             </thead>
             <tbody>
-              <% @enrollments.each do |enrollment| %>
+              <% @enrollments && @enrollments.each do |enrollment| %>
                 <tr>
                   <td><%= enrollment.batch.course.name %></td>
                   <td><%= enrollment.batch.name %></td>

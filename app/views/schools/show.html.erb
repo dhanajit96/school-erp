@@ -1,0 +1,185 @@
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card m-b-30">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-lg-2 text-center d-flex align-items-center justify-content-center bg-primary">
+            <img src="/assets/images/svg-icon/hospital.svg" class="img-fluid" width="80" alt="school_logo">
+          </div>
+          <div class="col-lg-6">
+            <h3 class="card-title text-primary mb-1"><%= @school.name %></h3>
+            <p class="mb-2"><i class="feather icon-map-pin mr-2"></i><%= @school.address %></p>
+            <div class="mt-3 border-top pt-3">
+              <h6 class="mb-2 text-muted text-uppercase font-12">School Administrators</h6>
+              <% if @school_admins.any? %>
+                <div style="max-height: 150px; overflow-y: auto;">
+                  <ul class="list-unstyled mb-0">
+                    <% @school_admins.each do |admin| %>
+                      <li class="media mb-2">
+                        <img src="/assets/images/users/men.svg" class="mr-3 rounded-circle" width="30" alt="admin_pic">
+                        <div class="media-body">
+                          <h6 class="mt-0 mb-0 font-14"><%= admin.name %></h6>
+                          <small class="text-muted"><i class="feather icon-mail mr-1"></i><%= admin.email %></small>
+                        </div>
+                      </li>
+                    <% end %>
+                  </ul>
+                </div>
+              <% else %>
+                <p class="text-danger small"><i class="feather icon-alert-circle mr-1"></i>No Admins Assigned</p>
+              <% end %>
+            </div>
+          </div>
+          <div class="col-lg-4 text-center border-left d-flex align-items-center">
+            <div class="w-100">
+              <div class="row">
+                <div class="col-4">
+                  <h4 class="text-primary"><%= @courses.count %></h4>
+                  <p class="mb-0 text-muted">Courses</p>
+                </div>
+                <div class="col-4">
+                  <h4 class="text-success"><%= @school.batches.count %></h4>
+                  <p class="mb-0 text-muted">Batches</p>
+                </div>
+                <div class="col-4">
+                  <h4 class="text-warning"><%= @school.users.where(role: :student).count %></h4>
+                  <p class="mb-0 text-muted">Students</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-6">
+    <div class="card m-b-30">
+      <div class="card-header">
+        <h5 class="card-title">Available Courses</h5>
+      </div>
+      <div class="card-body">
+        <% if @courses.any? %>
+          <div class="table-responsive">
+            <table class="table table-borderless">
+              <tbody>
+                <% @courses.each do |course| %>
+                  <tr class="border-bottom">
+                    <td>
+                      <h6 class="mb-1"><%= link_to course.name, courses_path %></h6>
+                      <small class="text-muted"><%= course.description.truncate(50) %></small>
+                    </td>
+                    <td class="text-right">
+                      <span class="badge badge-primary-inverse"><%= course.batches.count %> Batches</span>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% else %>
+          <p class="text-muted text-center py-3">No courses created yet.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card m-b-30">
+      <div class="card-header">
+        <h5 class="card-title">Recent Batches</h5>
+      </div>
+      <div class="card-body">
+        <% if @batches.any? %>
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>Batch Name</th>
+                  <th>Dates</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @batches.each do |batch| %>
+                  <tr>
+                    <td>
+                      <%= batch.name %><br>
+                      <small class="text-muted"><%= batch.course.name %></small>
+                    </td>
+                    <td>
+                      <small><%= batch.start_date.strftime("%d %b") %> - <%= batch.end_date.strftime("%d %b %y") %></small>
+                    </td>
+                    <td>
+                      <%= link_to batch_path(batch), class: "btn btn-outline-info btn-sm" do %>
+                        <i class="feather icon-eye"></i>
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-2 d-flex justify-content-center">
+            <%= paginate @batches, param_name: :batch_page %>
+          </div>
+        <% else %>
+          <p class="text-muted text-center py-3">No active batches.</p>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card m-b-30" id="students-section">
+      <div class="card-header">
+        <h5 class="card-title">Registered Students</h5>
+      </div>
+      <div class="card-body">
+        <% if @students.any? %>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Joined Date</th>
+                  <th>Enrolled Classes</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @students.each do |student| %>
+                  <tr>
+                    <td>
+                      <img src="/assets/images/users/men.svg" class="img-fluid rounded-circle mr-2" width="30" alt="user">
+                      <%= link_to student.name, user_path(student), class: "text-dark" %>
+                    </td>
+                    <td><%= student.email %></td>
+                    <td><%= student.created_at.strftime("%d %b %Y") %></td>
+                    <td>
+                      <span class="badge badge-success"><%= student.enrollments.approved.count %> Active</span>
+                      <span class="badge badge-warning"><%= student.enrollments.pending.count %> Pending</span>
+                    </td>
+                    <td><%= link_to "View", user_path(student), class: "btn btn-outline-info btn-sm" %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+          <div class="mt-3 d-flex justify-content-center">
+            <%= paginate @students, 
+                param_name: :student_page, 
+                params: { anchor: 'students-section' } %>
+          </div>
+        <% else %>
+          <div class="text-center py-4">
+            <i class="feather icon-users f-30 text-muted"></i>
+            <p class="mt-2 text-muted">No students registered in this school yet.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+/*
+ *= require_self
+ *= require_tree .
+ */
+
+/* Below is the css needed when minimizing the leftbar
+ .rightbar{ margin-left: 50px; } 
+.leftbar {
+  width: 50px;
+  }
+  .topbar{
+  left: 50px;
+  } */
