@@ -86,4 +86,12 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.infer_spec_type_from_file_location!
   config.filter_rails_from_backtrace!
+
+  config.before(:each, type: :system) do
+    # Use headless chrome (runs in background, faster)
+    driven_by :selenium, using: :headless_chrome, screen_size: [ 1400, 1400 ]
+
+    # OR if you want to see the browser pop up for debugging:
+    # driven_by :selenium, using: :chrome, screen_size: [1400, 1400]
+  end
 end

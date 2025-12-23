@@ -1,4 +1,4 @@
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+<%= form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: false }) do |f| %>
   <div class="logobar">
     <a href="#" class="logo logo-large">
       <img src="/assets/images/sta_odisha.svg" class="img-fluid" alt="logo" style="width: 100px; height: 100px">
