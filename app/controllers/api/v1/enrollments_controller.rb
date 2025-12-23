@@ -4,7 +4,7 @@ module Api
 
       def create
         batch = Batch.find(params[:batch_id])
-        authorize! :enroll, batch 
+        authorize! :enroll, batch
 
         enrollment = current_user.enrollments.build(batch: batch, status: :pending)
 
