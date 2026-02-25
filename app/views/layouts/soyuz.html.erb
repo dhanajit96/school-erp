@@ -14,12 +14,14 @@
     <link href="/assets/css/icons.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/flag-icon.min.css" rel="stylesheet" type="text/css">
     <link href="/assets/css/style.css" rel="stylesheet" type="text/css">
+    <%= action_cable_meta_tag %>
     <%= stylesheet_link_tag "soyuz", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= yield :head %>
   </head>
-  <body class="vertical-layout">
+  <body data-current-user-id="<%= current_user&.id %>" class="vertical-layout">
     <div class="infobar-settings-sidebar-overlay"></div>
     <div id="containerbar">
       <div class="leftbar">

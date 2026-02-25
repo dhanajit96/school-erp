@@ -22,9 +22,18 @@ default: &default
   password: password
   host: localhost
 
+# development:
+#   <<: *default
+#   database: school_management_system_development
+
 development:
-  <<: *default
-  database: school_management_system_development
+  primary:
+    <<: *default
+    database: school_management_system_development
+  cable:
+    <<: *default
+    database: school_management_system_cable_development
+    migrations_paths: db/cable_migrate
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -80,8 +89,17 @@ test:
 # Read https://guides.rubyonrails.org/configuring.html#configuring-a-database
 # for a full overview on how database connection configuration can be specified.
 #
+# production:
+#   <<: *default
+#   database: school_management_system_production
+#   username: school_management_system
+#   password: <%= ENV["SCHOOL_MANAGEMENT_SYSTEM_DATABASE_PASSWORD"] %>
+
 production:
-  <<: *default
-  database: school_management_system_production
-  username: school_management_system
-  password: <%= ENV["SCHOOL_MANAGEMENT_SYSTEM_DATABASE_PASSWORD"] %>
+  primary:
+      <<: *default
+      database: school_management_system_production
+  cable:
+      <<: *default
+      database: school_management_system_cable_production
+      migrations_paths: db/cable_migrate

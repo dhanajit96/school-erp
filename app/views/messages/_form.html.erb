@@ -1,0 +1,14 @@
+<%# app/views/messages/_form.html.erb %>
+<%= form_with(model: [chat, Message.new], 
+      data: { 
+        action: "turbo:submit-end->reset-form#reset" # Optional: clears text box
+      }) do |f| %>
+  
+  <div class="flex gap-2">
+    <%= f.text_field :content, 
+                     class: "flex-1 border rounded-full px-4 py-2", 
+                     placeholder: "Type message...", 
+                     autocomplete: "off" %>
+    <%= f.submit "Send", class: "bg-blue-600 text-white px-4 py-2 rounded-full" %>
+  </div>
+<% end %>

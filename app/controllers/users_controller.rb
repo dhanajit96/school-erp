@@ -37,22 +37,46 @@ class UsersController < ApplicationController
     @students = @students.order(created_at: :desc).page(params[:page]).per(10)
   end
 
+  # def show
+  #   @student = User.find(params[:id])
+
+  #   # Using 'authorize!' ensures School Admins can't view users from other schools
+  #   # (as defined in Ability.rb)
+  #   authorize! :read, @student
+
+  #   @page_title = @student.name
+  #   @breadcrumb_list = [ [ "Home", root_path ], [ "Users", users_path ], [ @student.name, nil ] ]
+
+  #   @actions = [ "Message #{@student.name}", chat_path(@chat) ]
+  #   if can? :update, @student
+  #     @actions << [ "Edit Profile", edit_user_path(@student) ]
+  #   end
+
+  #   # Only show enrollments if the user is a student
+  #   if @student.student?
+  #     @enrollments = @student.enrollments.includes(batch: :course).order(created_at: :desc)
+  #   end
+  # end
+  
   def show
     @student = User.find(params[:id])
-
-    # Using 'authorize!' ensures School Admins can't view users from other schools
-    # (as defined in Ability.rb)
     authorize! :read, @student
 
-    @page_title = @student.name
-    @breadcrumb_list = [ [ "Home", root_path ], [ "Users", users_path ], [ @student.name, nil ] ]
+    # This must happen BEFORE @actions
+    @chat = Chat.between(current_user, @student)
 
-    @actions = []
+    @page_title = @student.name
+    @breadcrumb_list = [ ["Home", root_path], ["Users", users_path], [@student.name, nil] ]
+
+    # Now @chat.id will definitely exist
+    @actions = [ 
+      ["Message #{@student.name}", chat_path(@chat)] 
+    ]
+
     if can? :update, @student
-      @actions << [ "Edit Profile", edit_user_path(@student) ]
+      @actions << ["Edit Profile", edit_user_path(@student)]
     end
 
-    # Only show enrollments if the user is a student
     if @student.student?
       @enrollments = @student.enrollments.includes(batch: :course).order(created_at: :desc)
     end

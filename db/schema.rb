@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_12_21_180437) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_25_095419) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -22,6 +22,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_180437) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_id"], name: "index_batches_on_course_id"
+  end
+
+  create_table "chats", force: :cascade do |t|
+    t.bigint "user_one_id", null: false
+    t.bigint "user_two_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_one_id", "user_two_id"], name: "index_chats_on_user_one_id_and_user_two_id", unique: true
   end
 
   create_table "courses", force: :cascade do |t|
@@ -42,6 +50,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_180437) do
     t.datetime "updated_at", null: false
     t.index ["batch_id"], name: "index_enrollments_on_batch_id"
     t.index ["user_id"], name: "index_enrollments_on_user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "chat_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chat_id"], name: "index_messages_on_chat_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
   create_table "schools", force: :cascade do |t|
@@ -74,5 +92,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_12_21_180437) do
   add_foreign_key "courses", "schools"
   add_foreign_key "enrollments", "batches"
   add_foreign_key "enrollments", "users"
+  add_foreign_key "messages", "chats"
+  add_foreign_key "messages", "users"
   add_foreign_key "users", "schools"
 end

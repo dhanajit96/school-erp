@@ -56,3 +56,20 @@
     padding: 6px;
     color: #6c757d;
 }
+
+
+/* Default: Left aligned (Others) */
+.message-row { justify-content: flex-start; }
+.message-bubble { background-color: #e5e7eb; color: #1f2937; }
+
+/* If author ID matches the body's current user ID: Right aligned (Me) */
+[data-current-user-id="1"] [data-author-id="1"],
+[data-current-user-id="2"] [data-author-id="2"],
+/* ... and so on. Better yet, use a simple Stimulus controller or this CSS trick: */
+
+body[data-current-user-id] .message-row {
+  display: flex;
+}
+text-s
+/* Use a small Stimulus controller if you want dynamic ID matching in CSS, 
+   or simply use the logic below if you're using Tailwind: */

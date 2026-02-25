@@ -52,6 +52,8 @@ gem "blueprinter"
 # CORS (Cross-Origin Resource Sharing)
 gem "rack-cors"
 
+gem "solid_cable"
+
 group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
